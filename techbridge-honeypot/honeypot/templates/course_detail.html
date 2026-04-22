@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>{{ course.course_name }} — TechBridge Academy</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --navy:#0f1f3d; --blue:#1a4b8c; --sky:#2d7dd2;
+    --gold:#e8a020; --light:#f4f7fc; --muted:#8a99b3;
+    --white:#ffffff; --sidebar-w:260px;
+  }
+  body { font-family:'DM Sans',sans-serif; background:var(--light); display:flex; min-height:100vh; }
+  .sidebar {
+    width:var(--sidebar-w); background:var(--navy);
+    display:flex; flex-direction:column; position:fixed; height:100vh; left:0; top:0; z-index:100;
+  }
+  .sidebar-brand { padding:28px 24px 20px; border-bottom:1px solid rgba(255,255,255,0.08); }
+  .logo { display:flex; align-items:center; gap:12px; }
+  .logo-icon { width:40px;height:40px;background:linear-gradient(135deg,var(--sky),var(--gold));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px; }
+  .logo-text { font-family:'DM Serif Display',serif;color:var(--white);font-size:1.1rem; }
+  .logo-text span { color:var(--gold); }
+  .sidebar-user { padding:20px 24px; border-bottom:1px solid rgba(255,255,255,0.08); }
+  .user-avatar { width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--sky),#5ba3e0);display:flex;align-items:center;justify-content:center;color:white;font-weight:600;font-size:1.1rem;margin-bottom:10px; }
+  .user-name { color:var(--white);font-weight:600;font-size:0.95rem; }
+  .user-role { display:inline-block;padding:2px 10px;background:rgba(45,125,210,0.25);border-radius:20px;color:#7eb8f0;font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;margin-top:4px; }
+  .sidebar-nav { padding:20px 16px; flex:1; }
+  .nav-label { font-size:0.65rem;font-weight:600;text-transform:uppercase;letter-spacing:1.2px;color:rgba(255,255,255,0.3);padding:0 12px;margin-bottom:8px;margin-top:20px; }
+  .nav-item { display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:8px;color:rgba(255,255,255,0.65);text-decoration:none;font-size:0.9rem;font-weight:500;transition:all 0.15s; }
+  .nav-item:hover,.nav-item.active { background:rgba(45,125,210,0.2);color:var(--white); }
+  .nav-item .icon { width:20px;text-align:center;font-size:1rem; }
+  .sidebar-footer { padding:16px 24px;border-top:1px solid rgba(255,255,255,0.08); }
+  .logout-btn { display:flex;align-items:center;gap:10px;color:rgba(255,255,255,0.5);text-decoration:none;font-size:0.85rem;transition:color 0.15s; }
+  .logout-btn:hover { color:#e74c3c; }
+
+  .main { margin-left:var(--sidebar-w); flex:1; }
+  .topbar { background:var(--white);border-bottom:1px solid #e2e8f0;padding:16px 32px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50; }
+  .breadcrumb { font-size:0.85rem;color:var(--muted); }
+  .breadcrumb a { color:var(--sky);text-decoration:none; }
+  .content { padding:32px; }
+
+  /* Course hero */
+  .course-hero {
+    background:{% if 'AWS' in course.course_name %}linear-gradient(135deg,#FF9900,#232F3E){% else %}linear-gradient(135deg,#c0392b,#2c3e50){% endif %};
+    border-radius:16px; padding:36px 40px; margin-bottom:28px;
+    color:white; display:flex; align-items:center; justify-content:space-between;
+  }
+  .course-hero h1 { font-family:'DM Serif Display',serif; font-size:2rem; margin-bottom:8px; }
+  .course-hero p { opacity:0.8; font-size:0.9rem; max-width:500px; line-height:1.5; }
+  .course-hero .icon { font-size:5rem; opacity:0.7; }
+
+  .course-layout { display:grid; grid-template-columns:1fr 320px; gap:24px; }
+
+  /* Materials */
+  .section-card { background:var(--white); border-radius:14px; border:1px solid #e2e8f0; overflow:hidden; }
+  .section-head { padding:20px 24px; border-bottom:1px solid #f0f4f8; display:flex; align-items:center; gap:10px; }
+  .section-head h2 { font-size:1.05rem; font-weight:700; color:var(--navy); }
+  .section-body { padding:8px 0; }
+
+  .file-item {
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 24px; border-bottom:1px solid #f8fafc;
+    transition:background 0.15s; cursor:pointer;
+  }
+  .file-item:last-child { border-bottom:none; }
+  .file-item:hover { background:#f8fafc; }
+  .file-left { display:flex; align-items:center; gap:14px; }
+  .file-icon {
+    width:40px; height:40px; border-radius:8px;
+    display:flex; align-items:center; justify-content:center; font-size:1.2rem;
+  }
+  .file-icon.pdf  { background:#fef2f2; }
+  .file-icon.mp4  { background:#eff8f1; }
+  .file-name { font-weight:600; font-size:0.9rem; color:var(--navy); }
+  .file-meta { font-size:0.75rem; color:var(--muted); margin-top:2px; }
+  .download-btn {
+    padding:6px 14px; border-radius:6px; font-size:0.8rem; font-weight:600;
+    background:var(--light); color:var(--navy); border:none; cursor:pointer;
+    transition:background 0.15s; text-decoration:none;
+  }
+  .download-btn:hover { background:rgba(45,125,210,0.1); color:var(--blue); }
+
+  /* Sidebar info */
+  .info-card { background:var(--white); border-radius:14px; border:1px solid #e2e8f0; padding:24px; margin-bottom:20px; }
+  .info-card h3 { font-size:0.95rem; font-weight:700; color:var(--navy); margin-bottom:16px; }
+  .info-row { display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #f8fafc; font-size:0.85rem; }
+  .info-row:last-child { border-bottom:none; }
+  .info-label { color:var(--muted); }
+  .info-val { font-weight:600; color:var(--navy); }
+
+  .progress-ring { text-align:center; margin-bottom:20px; }
+  .ring-num { font-size:2.5rem; font-weight:700; color:var(--navy); }
+  .ring-label { font-size:0.8rem; color:var(--muted); }
+  .progress-bar-wrap { background:var(--light);border-radius:4px;height:8px;margin-top:12px; }
+  .progress-bar { height:100%;border-radius:4px;background:linear-gradient(90deg,var(--sky),var(--blue)); }
+</style>
+</head>
+<body>
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="logo">
+      <div class="logo-icon">🎓</div>
+      <div class="logo-text">Tech<span>Bridge</span></div>
+    </div>
+  </div>
+  <div class="sidebar-user">
+    <div class="user-avatar">{{ username[0].upper() }}</div>
+    <div class="user-name">{{ username }}</div>
+    <div class="user-role">Student</div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-label">Main</div>
+    <a class="nav-item" href="/student"><span class="icon">🏠</span> Dashboard</a>
+    <a class="nav-item active" href="/student"><span class="icon">📚</span> My Courses</a>
+    <div class="nav-label">Learning</div>
+    <a class="nav-item" href="#"><span class="icon">📹</span> Videos</a>
+    <a class="nav-item" href="#"><span class="icon">📄</span> Materials</a>
+    <a class="nav-item" href="#"><span class="icon">📝</span> Assignments</a>
+  </nav>
+  <div class="sidebar-footer">
+    <a href="/logout" class="logout-btn"><span>🚪</span> Sign Out</a>
+  </div>
+</aside>
+
+<main class="main">
+  <div class="topbar">
+    <div class="breadcrumb">
+      <a href="/student">Dashboard</a> / <a href="/student">Courses</a> / {{ course.course_name }}
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="course-hero">
+      <div>
+        <h1>{{ course.course_name }}</h1>
+        <p>
+          {% if 'AWS' in course.course_name %}
+          Build real-world cloud skills with hands-on AWS labs, architecture walkthroughs, and certification prep.
+          {% else %}
+          Develop core security competencies: threat modeling, network defense, and structured incident response.
+          {% endif %}
+        </p>
+      </div>
+      <div class="icon">{% if 'AWS' in course.course_name %}☁️{% else %}🔐{% endif %}</div>
+    </div>
+
+    <div class="course-layout">
+      <div>
+        <!-- Materials -->
+        <div class="section-card" style="margin-bottom:20px;">
+          <div class="section-head">
+            <span>📄</span>
+            <h2>Course Materials</h2>
+          </div>
+          <div class="section-body">
+            {% for mat in materials %}
+            <div class="file-item">
+              <div class="file-left">
+                <div class="file-icon pdf">📕</div>
+                <div>
+                  <div class="file-name">{{ mat }}</div>
+                  <div class="file-meta">PDF · {{ range(120,890)|random }} KB · Updated Jan 2024</div>
+                </div>
+              </div>
+              <a href="/download/{{ mat }}" class="download-btn">⬇ Download</a>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- Videos -->
+        <div class="section-card">
+          <div class="section-head">
+            <span>📹</span>
+            <h2>Video Lectures</h2>
+          </div>
+          <div class="section-body">
+            {% for vid in videos %}
+            <div class="file-item">
+              <div class="file-left">
+                <div class="file-icon mp4">🎬</div>
+                <div>
+                  <div class="file-name">{{ vid }}</div>
+                  <div class="file-meta">MP4 · {{ range(15,60)|random }} min · HD 1080p</div>
+                </div>
+              </div>
+              <a href="/download/{{ vid }}" class="download-btn">▶ Play</a>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div>
+        <div class="info-card">
+          <div class="progress-ring">
+            <div class="ring-num">{% if 'AWS' in course.course_name %}72{% else %}54{% endif %}%</div>
+            <div class="ring-label">Course Completion</div>
+            <div class="progress-bar-wrap">
+              <div class="progress-bar" style="width:{% if 'AWS' in course.course_name %}72{% else %}54{% endif %}%"></div>
+            </div>
+          </div>
+        </div>
+        <div class="info-card">
+          <h3>Course Details</h3>
+          <div class="info-row"><span class="info-label">Level</span><span class="info-val">Intermediate</span></div>
+          <div class="info-row"><span class="info-label">Duration</span><span class="info-val">16 weeks</span></div>
+          <div class="info-row"><span class="info-label">Materials</span><span class="info-val">{{ materials|length }} files</span></div>
+          <div class="info-row"><span class="info-label">Videos</span><span class="info-val">{{ videos|length }} lectures</span></div>
+          <div class="info-row"><span class="info-label">Certification</span><span class="info-val">Yes</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+</body>
+</html>

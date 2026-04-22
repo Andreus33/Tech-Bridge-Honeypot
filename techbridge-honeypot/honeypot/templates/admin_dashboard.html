@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Admin Panel — TechBridge Academy</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{--navy:#0f1f3d;--blue:#1a4b8c;--sky:#2d7dd2;--gold:#e8a020;--light:#f4f7fc;--muted:#8a99b3;--white:#ffffff;--red:#c0392b;--green:#27ae60;--sidebar-w:260px}
+  body{font-family:'DM Sans',sans-serif;background:var(--light);display:flex;min-height:100vh}
+  .sidebar{width:var(--sidebar-w);background:#1a1a2e;display:flex;flex-direction:column;position:fixed;height:100vh;left:0;top:0;z-index:100}
+  .sidebar-brand{padding:28px 24px 20px;border-bottom:1px solid rgba(255,255,255,0.06)}
+  .logo{display:flex;align-items:center;gap:12px}
+  .logo-icon{width:40px;height:40px;background:linear-gradient(135deg,#e74c3c,#c0392b);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px}
+  .logo-text{font-family:'DM Serif Display',serif;color:var(--white);font-size:1.1rem}
+  .logo-text span{color:#e74c3c}
+  .admin-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;background:rgba(231,76,60,0.15);border:1px solid rgba(231,76,60,0.3);border-radius:20px;color:#e74c3c;font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:1px;margin:16px 24px 0}
+  .sidebar-nav{padding:20px 16px;flex:1}
+  .nav-label{font-size:0.65rem;font-weight:600;text-transform:uppercase;letter-spacing:1.2px;color:rgba(255,255,255,0.25);padding:0 12px;margin-bottom:8px;margin-top:20px}
+  .nav-item{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:8px;color:rgba(255,255,255,0.6);text-decoration:none;font-size:0.875rem;font-weight:500;transition:all 0.15s}
+  .nav-item:hover,.nav-item.active{background:rgba(255,255,255,0.07);color:var(--white)}
+  .nav-item .icon{width:20px;text-align:center}
+  .sidebar-footer{padding:16px 24px;border-top:1px solid rgba(255,255,255,0.06)}
+  .logout-btn{display:flex;align-items:center;gap:10px;color:rgba(255,255,255,0.4);text-decoration:none;font-size:0.85rem;transition:color 0.15s}
+  .logout-btn:hover{color:#e74c3c}
+
+  .main{margin-left:var(--sidebar-w);flex:1}
+  .topbar{background:var(--white);border-bottom:1px solid #e2e8f0;padding:14px 32px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+  .topbar-left h2{font-size:1rem;font-weight:700;color:var(--navy)}
+  .topbar-left p{font-size:0.75rem;color:var(--muted)}
+  .content{padding:28px 32px}
+
+  /* Alert banner */
+  .security-alert{background:#fff8e1;border:1px solid #ffe082;border-radius:10px;padding:14px 20px;margin-bottom:24px;display:flex;align-items:center;gap:12px;font-size:0.85rem;color:#856404}
+  .security-alert strong{font-weight:700}
+
+  /* Stats */
+  .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px}
+  .stat-card{background:var(--white);border-radius:12px;padding:20px;border:1px solid #e2e8f0;display:flex;align-items:center;gap:14px}
+  .stat-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.3rem}
+  .stat-num{font-size:1.6rem;font-weight:700;color:var(--navy)}
+  .stat-label{font-size:0.75rem;color:var(--muted)}
+
+  /* Section */
+  .section-card{background:var(--white);border-radius:14px;border:1px solid #e2e8f0;margin-bottom:24px;overflow:hidden}
+  .section-head{padding:18px 24px;border-bottom:1px solid #f0f4f8;display:flex;align-items:center;justify-content:space-between}
+  .section-head h2{font-size:1rem;font-weight:700;color:var(--navy);display:flex;align-items:center;gap:8px}
+
+  /* Sensitive lure button */
+  .lure-btn{
+    display:inline-flex;align-items:center;gap:6px;
+    padding:8px 16px;border-radius:8px;font-size:0.8rem;font-weight:700;
+    background:#fef2f2;color:var(--red);border:1px solid #fecaca;
+    text-decoration:none;cursor:pointer;transition:background 0.15s;
+  }
+  .lure-btn:hover{background:#fee2e2}
+
+  /* Table */
+  table{width:100%;border-collapse:collapse}
+  thead th{background:#f8fafc;padding:11px 16px;text-align:left;font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--muted);border-bottom:1px solid #e2e8f0}
+  tbody td{padding:13px 16px;border-bottom:1px solid #f8fafc;font-size:0.875rem;color:var(--navy)}
+  tbody tr:last-child td{border-bottom:none}
+  tbody tr:hover{background:#fafbfc}
+
+  /* Password cell — styled as "exposed" */
+  .pw-cell{font-family:monospace;font-size:0.8rem;background:#fff8e1;padding:3px 8px;border-radius:4px;color:#92400e;font-weight:600}
+  .role-badge{display:inline-block;padding:2px 8px;border-radius:12px;font-size:0.7rem;font-weight:700;text-transform:uppercase}
+  .role-student{background:#eff8f1;color:#166534}
+  .role-admin{background:#fef3c7;color:#92400e}
+
+  /* Log table */
+  .log-action{font-family:monospace;font-size:0.78rem;padding:2px 6px;border-radius:4px}
+  .log-login{background:#eff8f1;color:#166534}
+  .log-fail{background:#fef2f2;color:#991b1b}
+  .log-access{background:#eff6ff;color:#1e40af}
+  .log-sensitive{background:#fef3c7;color:#92400e;font-weight:700}
+
+  /* Files list */
+  .file-list{padding:8px 0}
+  .file-row{display:flex;align-items:center;justify-content:space-between;padding:12px 24px;border-bottom:1px solid #f8fafc}
+  .file-row:last-child{border-bottom:none}
+  .file-name-col{display:flex;align-items:center;gap:12px;font-size:0.875rem;font-weight:600;color:var(--navy)}
+  .file-icon-sm{width:34px;height:34px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:1rem}
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="logo">
+      <div class="logo-icon">🛡</div>
+      <div class="logo-text">Tech<span>Bridge</span></div>
+    </div>
+    <div class="admin-badge">⚠ Admin Access</div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-label">Administration</div>
+    <a class="nav-item active" href="/admin"><span class="icon">📊</span> Dashboard</a>
+    <a class="nav-item" href="/admin"><span class="icon">👥</span> Student Records</a>
+    <a class="nav-item" href="/admin"><span class="icon">📚</span> Course Management</a>
+    <a class="nav-item" href="/admin"><span class="icon">📋</span> Audit Logs</a>
+    <div class="nav-label">System</div>
+    <a class="nav-item" href="#"><span class="icon">⚙️</span> Settings</a>
+    <a class="nav-item" href="#"><span class="icon">🔔</span> Alerts</a>
+  </nav>
+  <div class="sidebar-footer">
+    <a href="/logout" class="logout-btn"><span>🚪</span> Sign Out</a>
+  </div>
+</aside>
+
+<main class="main">
+  <div class="topbar">
+    <div class="topbar-left">
+      <h2>Instructor & Admin Panel</h2>
+      <p>TechBridge Academy — Internal Administration Portal</p>
+    </div>
+    <div style="font-size:0.8rem;color:var(--muted)">Logged in as: <strong>{{ username }}</strong></div>
+  </div>
+
+  <div class="content">
+
+    <!-- Security notice — intentionally weak, part of the honeypot lure -->
+    <div class="security-alert">
+      ⚠ <div><strong>Reminder:</strong> IT ticket #4821 — credential vault migration is still pending. Temporary plaintext credential file is at <code>/admin/passwords</code>. Please do not share externally.</div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-icon" style="background:#eff6ff">👥</div>
+        <div><div class="stat-num">{{ students|length }}</div><div class="stat-label">Students</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background:#eff8f1">📚</div>
+        <div><div class="stat-num">{{ courses|length }}</div><div class="stat-label">Courses</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background:#fef3c7">📋</div>
+        <div><div class="stat-num">{{ logs|length }}</div><div class="stat-label">Log Entries</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background:#fef2f2">🚨</div>
+        <div><div class="stat-num">3</div><div class="stat-label">Alerts</div></div>
+      </div>
+    </div>
+
+    <!-- Student Records Table (honeypot lure: exposes passwords) -->
+    <div class="section-card">
+      <div class="section-head">
+        <h2>📋 Student Records <span style="font-size:0.7rem;font-weight:500;color:var(--muted);margin-left:8px">— All enrolled students</span></h2>
+        <a href="/admin/passwords" class="lure-btn">⬇ Export passwords.txt</a>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>#</th><th>Username</th><th>Email</th>
+            <th>Password</th><th>Course</th><th>Role</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for s in students %}
+          <tr>
+            <td style="color:var(--muted)">{{ s.id }}</td>
+            <td><strong>{{ s.username }}</strong></td>
+            <td style="color:var(--sky)">{{ s.email }}</td>
+            <td><span class="pw-cell">{{ s.password }}</span></td>
+            <td>{{ s.course }}</td>
+            <td><span class="role-badge role-student">Student</span></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Courses -->
+    <div class="section-card">
+      <div class="section-head">
+        <h2>📚 Active Courses</h2>
+      </div>
+      <table>
+        <thead>
+          <tr><th>#</th><th>Course Name</th><th>Materials</th><th>Videos</th></tr>
+        </thead>
+        <tbody>
+          {% for c in courses %}
+          <tr>
+            <td style="color:var(--muted)">{{ c.id }}</td>
+            <td><strong>{{ c.course_name }}</strong></td>
+            <td style="font-size:0.8rem;color:var(--muted)">{{ c.course_material }}</td>
+            <td style="font-size:0.8rem;color:var(--muted)">{{ c.video }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Downloadable files lure -->
+    <div class="section-card">
+      <div class="section-head">
+        <h2>📁 Server Files <span style="font-size:0.7rem;font-weight:500;color:var(--muted);margin-left:8px">— /home/admin/courses</span></h2>
+      </div>
+      <div class="file-list">
+        {% set all_files = ['AWS_Intro.pdf','EC2_Overview.pdf','VPC_Networking.pdf','aws_intro.mp4','ec2_setup.mp4','Security_Basics.pdf','Network_Security.pdf','Incident_Response.pdf','cyber_intro.mp4','incident_response.mp4'] %}
+        {% for f in all_files %}
+        <div class="file-row">
+          <div class="file-name-col">
+            <div class="file-icon-sm" style="background:{% if '.pdf' in f %}#fef2f2{% else %}#eff8f1{% endif %}">
+              {% if '.pdf' in f %}📄{% else %}🎬{% endif %}
+            </div>
+            {{ f }}
+          </div>
+          <a href="/download/{{ f }}" class="lure-btn" style="font-size:0.75rem;padding:5px 12px">⬇ Download</a>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Audit Log -->
+    <div class="section-card">
+      <div class="section-head">
+        <h2>🔍 Recent Activity Log</h2>
+        <span style="font-size:0.8rem;color:var(--muted)">Last 50 events</span>
+      </div>
+      <table>
+        <thead>
+          <tr><th>Timestamp</th><th>IP</th><th>User</th><th>Action</th><th>Details</th></tr>
+        </thead>
+        <tbody>
+          {% for log in logs %}
+          <tr>
+            <td style="font-size:0.78rem;color:var(--muted);white-space:nowrap">{{ log.timestamp[:19] }}</td>
+            <td style="font-family:monospace;font-size:0.78rem">{{ log.ip }}</td>
+            <td><strong>{{ log.username }}</strong></td>
+            <td>
+              <span class="log-action
+                {% if 'FAIL' in log.action %}log-fail
+                {% elif 'SENSITIVE' in log.action or 'CANARY' in log.action or 'PASSWORD' in log.action %}log-sensitive
+                {% elif 'LOGIN' in log.action %}log-login
+                {% else %}log-access{% endif %}">
+                {{ log.action }}
+              </span>
+            </td>
+            <td style="font-size:0.8rem;color:var(--muted)">{{ log.details or '—' }}</td>
+          </tr>
+          {% endfor %}
+          {% if not logs %}
+          <tr><td colspan="5" style="text-align:center;color:var(--muted);padding:24px">No activity yet</td></tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</main>
+</body>
+</html>

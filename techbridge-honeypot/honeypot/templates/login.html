@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TechBridge Academy — Sign In</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy:   #0f1f3d;
+    --blue:   #1a4b8c;
+    --sky:    #2d7dd2;
+    --gold:   #e8a020;
+    --light:  #f4f7fc;
+    --muted:  #8a99b3;
+    --white:  #ffffff;
+    --danger: #c0392b;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--navy);
+    min-height: 100vh;
+    display: flex;
+    overflow: hidden;
+  }
+
+  /* Left panel */
+  .panel-left {
+    flex: 1;
+    background: linear-gradient(145deg, #0a1628 0%, #1a3a6e 60%, #0f2d5a 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 60px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .panel-left::before {
+    content: '';
+    position: absolute;
+    width: 500px; height: 500px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(45,125,210,0.15) 0%, transparent 70%);
+    top: -100px; left: -100px;
+  }
+  .panel-left::after {
+    content: '';
+    position: absolute;
+    width: 400px; height: 400px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(232,160,32,0.08) 0%, transparent 70%);
+    bottom: -80px; right: -80px;
+  }
+
+  .brand {
+    text-align: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  .brand-logo {
+    width: 80px; height: 80px;
+    background: linear-gradient(135deg, var(--sky), var(--gold));
+    border-radius: 20px;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 24px;
+    font-size: 36px;
+    box-shadow: 0 20px 60px rgba(45,125,210,0.4);
+  }
+
+  .brand h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2.6rem;
+    color: var(--white);
+    line-height: 1.1;
+    margin-bottom: 12px;
+  }
+
+  .brand h1 span { color: var(--gold); }
+
+  .brand p {
+    color: var(--muted);
+    font-size: 1rem;
+    font-weight: 300;
+    max-width: 340px;
+    line-height: 1.6;
+  }
+
+  .stats {
+    display: flex;
+    gap: 40px;
+    margin-top: 60px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .stat { text-align: center; }
+  .stat-num {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2rem;
+    color: var(--white);
+  }
+  .stat-num span { color: var(--gold); }
+  .stat-label { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
+
+  /* Right panel */
+  .panel-right {
+    width: 480px;
+    background: var(--white);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 60px 50px;
+  }
+
+  .form-header { margin-bottom: 40px; }
+  .form-header h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2rem;
+    color: var(--navy);
+    margin-bottom: 8px;
+  }
+  .form-header p { color: var(--muted); font-size: 0.9rem; }
+
+  .form-group { margin-bottom: 20px; }
+
+  label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--navy);
+    margin-bottom: 8px;
+  }
+
+  input[type="text"], input[type="password"] {
+    width: 100%;
+    padding: 14px 16px;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    color: var(--navy);
+    background: var(--light);
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+  }
+
+  input:focus {
+    border-color: var(--sky);
+    box-shadow: 0 0 0 3px rgba(45,125,210,0.1);
+    background: var(--white);
+  }
+
+  .btn-login {
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(135deg, var(--blue), var(--sky));
+    color: var(--white);
+    border: none;
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    margin-top: 8px;
+    transition: transform 0.15s, box-shadow 0.15s;
+    box-shadow: 0 4px 20px rgba(26,75,140,0.3);
+  }
+
+  .btn-login:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 28px rgba(26,75,140,0.4);
+  }
+
+  .error-msg {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: var(--danger);
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 0.875rem;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .divider {
+    border: none;
+    border-top: 1px solid #e2e8f0;
+    margin: 32px 0;
+  }
+
+  .help-text {
+    font-size: 0.8rem;
+    color: var(--muted);
+    text-align: center;
+  }
+
+  .help-text a { color: var(--sky); text-decoration: none; }
+  .help-text a:hover { text-decoration: underline; }
+
+  @media (max-width: 900px) {
+    .panel-left { display: none; }
+    .panel-right { width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<div class="panel-left">
+  <div class="brand">
+    <div class="brand-logo">🎓</div>
+    <h1>TechBridge<br><span>Academy</span></h1>
+    <p>Your gateway to world-class technology education. Cloud, security, and beyond.</p>
+  </div>
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-num"><span>12</span>k+</div>
+      <div class="stat-label">Students</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num"><span>48</span></div>
+      <div class="stat-label">Courses</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num"><span>96</span>%</div>
+      <div class="stat-label">Pass Rate</div>
+    </div>
+  </div>
+</div>
+
+<div class="panel-right">
+  <div class="form-header">
+    <h2>Welcome back</h2>
+    <p>Sign in to your TechBridge Academy account</p>
+  </div>
+
+  {% if error %}
+  <div class="error-msg">
+    <span>⚠</span> {{ error }}
+  </div>
+  {% endif %}
+
+  <form method="POST" action="/login">
+    <div class="form-group">
+      <label for="username">Username or Email</label>
+      <input type="text" id="username" name="username"
+             placeholder="Enter your username" autocomplete="username" required>
+    </div>
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password"
+             placeholder="Enter your password" autocomplete="current-password" required>
+    </div>
+    <button type="submit" class="btn-login">Sign In →</button>
+  </form>
+
+  <hr class="divider">
+
+  <div class="help-text">
+    Forgot your password? <a href="#">Contact IT Support</a><br><br>
+    New student? <a href="#">Enrollment opens June 2026</a>
+  </div>
+</div>
+
+</body>
+</html>

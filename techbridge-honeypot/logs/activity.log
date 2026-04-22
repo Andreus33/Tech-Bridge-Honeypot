@@ -1,0 +1,21 @@
+2026-04-19 02:44:42 UTC | 127.0.0.1 | student1 | LOGIN_SUCCESS | role=student
+2026-04-19 02:44:43 UTC | 127.0.0.1 | anonymous | PAGE_VIEW | student dashboard
+2026-04-19 02:46:13 UTC | 127.0.0.1 | anonymous | PAGE_VIEW | student dashboard
+2026-04-19 02:46:17 UTC | 127.0.0.1 | anonymous | PAGE_VIEW | student dashboard
+2026-04-19 02:46:32 UTC | 127.0.0.1 | anonymous | COURSE_VIEW | course_id=1 name=AWS Fundamentals
+2026-04-19 02:46:45 UTC | 127.0.0.1 | anonymous | FILE_DOWNLOAD | CANARY TRIGGERED: file=AWS_Intro.pdf
+2026-04-19 02:47:57 UTC | 127.0.0.1 | anonymous | LOGOUT | session ended
+2026-04-19 02:48:41 UTC | 127.0.0.1 | admin | LOGIN_SUCCESS | role=admin
+2026-04-19 02:48:42 UTC | 127.0.0.1 | anonymous | PAGE_VIEW | admin dashboard
+2026-04-19 03:16:15 UTC | 127.0.0.1 | anonymous | UNAUTHORIZED_ACCESS | Required roles: ('superadmin',), got: admin
+2026-04-19 03:42:59 UTC | 127.0.0.1 | student1 | LOGIN_FAILED | bad credentials for 'student1'
+2026-04-19 03:43:42 UTC | 127.0.0.1 | student1 | LOGIN_FAILED | bad credentials for 'student1'
+2026-04-19 03:44:23 UTC | 127.0.0.1 | admin | LOGIN_SUCCESS | role=admin
+2026-04-19 03:44:23 UTC | 127.0.0.1 | anonymous | PAGE_VIEW | admin dashboard
+2026-04-19 03:45:00 UTC | 127.0.0.1 | student2 | LOGIN_SUCCESS | role=student
+2026-04-19 03:45:01 UTC | 127.0.0.1 | anonymous | PAGE_VIEW | student dashboard
+2026-04-19 03:45:43 UTC | 127.0.0.1 | anonymous | PAGE_VIEW | student dashboard
+2026-04-19 03:48:46 UTC | 127.0.0.1 | anonymous | LOGOUT | session ended
+2026-04-19 03:49:23 UTC | 127.0.0.1 | superadmin | LOGIN_SUCCESS | role=superadmin
+2026-04-19 03:49:24 UTC | 127.0.0.1 | anonymous | TERMINAL_ACCESS | superadmin terminal opened
+2026-04-19 03:49:35 UTC | 127.0.0.1 | anonymous | LOGOUT | session ended
